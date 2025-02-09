@@ -43,34 +43,34 @@ if (isset($_SESSION['user_id'])) {
   <!-- start nav -->
   <div class="container">
   <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
-        <div class="container">
-            <a class="navbar-brand" href="index.php" style="font-size: xx-large;">Gilded Garments</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="oi oi-menu"></span> Menu
-            </button>
-            <div class="collapse navbar-collapse" id="ftco-nav">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : ''; ?>"><a href="index.php" class="nav-link" style="font-size: large;">Home</a></li>
-                    <li class="nav-item dropdown <?php echo basename($_SERVER['PHP_SELF']) == 'shop.php' || basename($_SERVER['PHP_SELF']) == 'product-single.php' || basename($_SERVER['PHP_SELF']) == 'cart.php' || basename($_SERVER['PHP_SELF']) == 'checkout.php' ? 'active' : ''; ?>">
-                        <a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: large;">Catalog</a>
-                        <div class="dropdown-menu" aria-labelledby="dropdown04">
-                            <a class="dropdown-item" href="shop.php">Shop</a>
-                            <a class="dropdown-item" href="cart.php">Cart</a>
-                            <a class="dropdown-item" href="checkout.php">Checkout</a>
-                        </div>
-                    </li>
-                    <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'contact.php' ? 'active' : ''; ?>"><a href="contact.php" class="nav-link" style="font-size: large;">Contact</a></li>
-                    <li class="nav-item cta cta-colored <?php echo basename($_SERVER['PHP_SELF']) == 'cart.php' ? 'active' : ''; ?>"><a href="cart.php" class="nav-link"><span class="icon-shopping_cart" style="font-size: x-large;"></span><span style="font-size: 19px;">[0]</span></a></li>
-                    <?php if (isset($_SESSION['user_id'])): ?>
-                        <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'profile.php' ? 'active' : ''; ?>"><a href="profile.php" class="nav-link" style="font-size: large;"><i class="fas fa-user"></i> Profile</a></li>
-                        <li class="nav-item"><a href="logout.php" class="nav-link" style="font-size: large;">Logout</a></li>
-                    <?php else: ?>
-                        <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'regestration.php' ? 'active' : ''; ?>"><a href="regestration.php" class="nav-link" style="font-size: large;">Sign In</a></li>
-                    <?php endif; ?>
-                </ul>
-            </div>
-        </div>
-    </nav>
+		<div class="container">
+			<a class="navbar-brand" href="index.php" style="font-size: xx-large;">Gilded Garments</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="oi oi-menu"></span> Menu
+			</button>
+			<div class="collapse navbar-collapse" id="ftco-nav">
+				<ul class="navbar-nav ml-auto">
+					<li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : ''; ?>"><a href="index.php" class="nav-link" style="font-size: large;">Home</a></li>
+					<li class="nav-item dropdown <?php echo basename($_SERVER['PHP_SELF']) == 'shop.php' || basename($_SERVER['PHP_SELF']) == 'product-single.php' || basename($_SERVER['PHP_SELF']) == 'cart.php' || basename($_SERVER['PHP_SELF']) == 'checkout.php' ? 'active' : ''; ?>">
+						<a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: large;">Catalog</a>
+						<div class="dropdown-menu" aria-labelledby="dropdown04">
+							<a class="dropdown-item" href="shop.php">Shop</a>
+							<a class="dropdown-item" href="cart.php">Cart</a>
+							<a class="dropdown-item" href="checkout.php">Checkout</a>
+						</div>
+					</li>
+					<li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'contact.php' ? 'active' : ''; ?>"><a href="contact.php" class="nav-link" style="font-size: large;">Contact</a></li>
+					<li class="nav-item cta cta-colored <?php echo basename($_SERVER['PHP_SELF']) == 'cart.php' ? 'active' : ''; ?>"><a href="cart.php" class="nav-link"><span class="icon-shopping_cart" style="font-size: x-large;"></a></li>
+					<?php if (isset($_SESSION['user_id'])): ?>
+						<li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'profile.php' ? 'active' : ''; ?>"><a href="profile.php" class="nav-link" style="font-size: large;"><i class="fas fa-user"></i> Profile</a></li>
+						<li class="nav-item"><a href="logout.php" class="nav-link" style="font-size: large;">Logout</a></li>
+					<?php else: ?>
+						<li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'regestration.php' ? 'active' : ''; ?>"><a href="regestration.php" class="nav-link" style="font-size: large;">Sign In</a></li>
+					<?php endif; ?>
+				</ul>
+			</div>
+		</div>
+	</nav>
   </div>
 <!-- end nav -->
 

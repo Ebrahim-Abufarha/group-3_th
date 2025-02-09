@@ -6,60 +6,16 @@
         "price": 29.99,
         "description": "Warm and cozy hoodie for kids.",
         "image": "images\/kids_hoodie.jpg",
-        "quantity": 9
-    },
-    {
-        "user_id": 1,
-        "id": "14",
-        "name": "Sports Hoodie",
-        "price": 45.99,
-        "description": "Breathable and warm sports hoodie.",
-        "image": "images\/mens_hoodie1.jpg",
-        "quantity": 5
-    },
-    {
-        "user_id": 1,
-        "id": "15",
-        "name": "Casual Sneakers",
-        "price": 59.99,
-        "description": "Comfortable sneakers for everyday use.",
-        "image": "images\/mens_sneakers1.jpg",
-        "quantity": 1
-    },
-    {
-        "user_id": 1,
-        "id": "13",
-        "name": "Leather Jacket",
-        "price": 79.99,
-        "description": "High-quality leather jacket for men.",
-        "image": "images\/mens_jacket1.jpg",
-        "quantity": 3
-    },
-    {
-        "user_id": 1,
-        "id": "7",
-        "name": "Women's Summer Dress",
-        "price": 39.99,
-        "description": "A light and breathable summer dress.",
-        "image": "images\/womens_summer_dress.jpg",
         "quantity": 4
     },
     {
-        "user_id": 1,
-        "id": "17",
-        "name": "Denim Jacket",
-        "price": 55.99,
-        "description": "Classic denim jacket for women.",
-        "image": "images\/womens_jacket1.jpg",
-        "quantity": 10
-    },
-    {
-        "user_id": 1,
         "id": "9",
         "name": "Leather Wallet",
-        "price": 19.99,
         "description": "Premium quality leather wallet.",
+        "price": 19.99,
         "image": "images\/leather_wallet.jpg",
-        "quantity": 1
+        "discount": 0,
+        "quantity": 2,
+        "user_id": "1"
     }
 ]

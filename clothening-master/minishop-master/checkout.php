@@ -1,5 +1,65 @@
-<?php 
+<?php
 session_start();
+
+if (isset($_POST['check']) && isset($_SESSION['user_id'])) {
+    $user_id = $_SESSION['user_id'];
+
+    $cartFile = 'cart.json';
+    if (file_exists($cartFile)) {
+        $cartData = file_get_contents($cartFile);
+        $cartItems = json_decode($cartData, true);
+
+        $userCartItems = array_filter($cartItems, function($item) use ($user_id) {
+            return $item['user_id'] == $user_id;
+        });
+
+        if (!empty($userCartItems)) {
+            include 'config.php';
+
+            try {
+                $conn->beginTransaction();
+
+                $sql = "INSERT INTO orders (user_id, created_at) VALUES (:user_id, NOW())";
+                $stmt = $conn->prepare($sql);
+                $stmt->bindParam(':user_id', $user_id);
+                $stmt->execute();
+
+                $order_id = $conn->lastInsertId();
+
+                foreach ($userCartItems as $item) {
+                    if (isset($item['id'], $item['quantity'], $item['price'])) {
+                        $sql = "INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (:order_id, :product_id, :quantity, :price)";
+                        $stmt = $conn->prepare($sql);
+                        $stmt->bindParam(':order_id', $order_id);
+                        $stmt->bindParam(':product_id', $item['id']);
+                        $stmt->bindParam(':quantity', $item['quantity']);
+                        $stmt->bindParam(':price', $item['price']);
+                        $stmt->execute();
+                    } else {
+                        throw new Exception("Invalid cart item data.");
+                    }
+                }
+
+                $cartItems = array_filter($cartItems, function($item) use ($user_id) {
+                    return $item['user_id'] != $user_id;
+                });
+                file_put_contents($cartFile, json_encode($cartItems));
+
+                $conn->commit();
+
+                header("Location: index.php");
+                exit();
+            } catch (Exception $e) {
+                $conn->rollBack();
+                echo "Failed: " . $e->getMessage();
+            }
+        } else {
+            echo "No items in cart.";
+        }
+    } else {
+        echo "Cart file not found.";
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -147,36 +207,35 @@ input[type="submit"]:hover {
   </head>
   <body class="goto-here">
 		
-    <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
-      <div class="container">
-        <a class="navbar-brand" href="index.php" style="font-size: xx-large;">Gilded Garments</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="oi oi-menu"></span> Menu
-        </button>
-        <div class="collapse navbar-collapse" id="ftco-nav">
-          <ul class="navbar-nav ml-auto">
-            <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : ''; ?>"><a href="index.php" class="nav-link" style="font-size: large;">Home</a></li>
-            <li class="nav-item dropdown <?php echo basename($_SERVER['PHP_SELF']) == 'shop.php' || basename($_SERVER['PHP_SELF']) == 'product-single.php' || basename($_SERVER['PHP_SELF']) == 'cart.php' || basename($_SERVER['PHP_SELF']) == 'checkout.php' ? 'active' : ''; ?>">
-              <a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: large;">Catalog</a>
-              <div class="dropdown-menu" aria-labelledby="dropdown04">
-                <a class="dropdown-item" href="shop.php">Shop</a>
-                <a class="dropdown-item" href="product-single.php">Single Product</a>
-                <a class="dropdown-item" href="cart.php">Cart</a>
-                <a class="dropdown-item" href="checkout.php">Checkout</a>
-              </div>
-            </li>
-            <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'contact.php' ? 'active' : ''; ?>"><a href="contact.php" class="nav-link" style="font-size: large;">Contact</a></li>
-            <li class="nav-item cta cta-colored <?php echo basename($_SERVER['PHP_SELF']) == 'cart.php' ? 'active' : ''; ?>"><a href="cart.php" class="nav-link"><span class="icon-shopping_cart" style="font-size: x-large;"></span><span style="font-size: 19px;">[0]</span></a></li>
-            <?php if (isset($_SESSION['user_id'])): ?>
-              <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'profile.php' ? 'active' : ''; ?>"><a href="profile.php" class="nav-link" style="font-size: large;"><i class="fas fa-user"></i> Profile</a></li>
-              <li class="nav-item"><a href="logout.php" class="nav-link" style="font-size: large;">Logout</a></li>
-            <?php else: ?>
-              <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'regestration.php' ? 'active' : ''; ?>"><a href="regestration.php" class="nav-link" style="font-size: large;">Sign In</a></li>
-            <?php endif; ?>
-          </ul>
-        </div>
-      </div>
-    </nav>
+  <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+		<div class="container">
+			<a class="navbar-brand" href="index.php" style="font-size: xx-large;">Gilded Garments</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="oi oi-menu"></span> Menu
+			</button>
+			<div class="collapse navbar-collapse" id="ftco-nav">
+				<ul class="navbar-nav ml-auto">
+					<li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : ''; ?>"><a href="index.php" class="nav-link" style="font-size: large;">Home</a></li>
+					<li class="nav-item dropdown <?php echo basename($_SERVER['PHP_SELF']) == 'shop.php' || basename($_SERVER['PHP_SELF']) == 'product-single.php' || basename($_SERVER['PHP_SELF']) == 'cart.php' || basename($_SERVER['PHP_SELF']) == 'checkout.php' ? 'active' : ''; ?>">
+						<a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: large;">Catalog</a>
+						<div class="dropdown-menu" aria-labelledby="dropdown04">
+							<a class="dropdown-item" href="shop.php">Shop</a>
+							<a class="dropdown-item" href="cart.php">Cart</a>
+							<a class="dropdown-item" href="checkout.php">Checkout</a>
+						</div>
+					</li>
+					<li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'contact.php' ? 'active' : ''; ?>"><a href="contact.php" class="nav-link" style="font-size: large;">Contact</a></li>
+					<li class="nav-item cta cta-colored <?php echo basename($_SERVER['PHP_SELF']) == 'cart.php' ? 'active' : ''; ?>"><a href="cart.php" class="nav-link"><span class="icon-shopping_cart" style="font-size: x-large;"></a></li>
+					<?php if (isset($_SESSION['user_id'])): ?>
+						<li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'profile.php' ? 'active' : ''; ?>"><a href="profile.php" class="nav-link" style="font-size: large;"><i class="fas fa-user"></i> Profile</a></li>
+						<li class="nav-item"><a href="logout.php" class="nav-link" style="font-size: large;">Logout</a></li>
+					<?php else: ?>
+						<li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'regestration.php' ? 'active' : ''; ?>"><a href="regestration.php" class="nav-link" style="font-size: large;">Sign In</a></li>
+					<?php endif; ?>
+				</ul>
+			</div>
+		</div>
+	</nav>
 
     <div class="hero-wrap hero-bread" style="background-image: url('images/bg_6.jpg');">
       <div class="container4">
@@ -278,8 +337,9 @@ input[type="submit"]:hover {
                       I accept the <a href="#">terms and conditions</a>
                     </label>
                   </div>
-				  <input name="check" type="submit" value="Submit">
+				  <input  name="check" type="submit" value="Submit">
 				  </form>
+                
   
                 </div>
               </div>
@@ -373,17 +433,25 @@ input[type="submit"]:hover {
 
             return valid;
         }
+
+        function clearLocalStorage() {
+    localStorage.clear();
+}
+
     </script>
   </body>
 </html>
 <?php 
-          
-          if (isset($_REQUEST['check'])) {
-            if (isset($_SESSION['user_id'])) {
-                echo "<script>alert('Successfully logged in');</script>";
-            } else {
-                header('Location: registration.php');
-                exit();
-            }
-        }
-        ?>
+session_start(); 
+
+if (isset($_REQUEST['check'])) {
+    if (isset($_SESSION['user_id'])) {
+      echo "<script>localStorage.clear();</script>";
+
+        echo "<script>alert('Successfully');</script>";
+      } else {
+        echo "<script> window.location.href = 'regestration.php';</script>";
+        exit();
+    }
+}
+?>
